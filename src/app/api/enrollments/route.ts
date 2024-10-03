@@ -2,6 +2,7 @@ import { checkToken } from "@lib/checkToken";
 import { Database, Payload } from "@lib/types";
 import { NextRequest, NextResponse } from "next/server";
 import { getPrisma } from "@lib/getPrisma";
+import { title } from "process";
 
 export const GET = async () => {
   const payload = checkToken();
@@ -29,11 +30,15 @@ export const GET = async () => {
   }
 
   const prisma = getPrisma();
-  const courses = null;
+  const enrollments = await prisma.enrollment.findMany({
+    where: { studentId :studentId }, //stdId from DB : stdId from payload
+    include: {course: true,},
+  });
+  console.log(enrollments);
 
   return NextResponse.json({
     ok: true,
-    courses,
+    enrollments,
   });
 };
 
